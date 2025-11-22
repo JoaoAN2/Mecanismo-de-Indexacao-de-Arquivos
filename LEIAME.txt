@@ -1,0 +1,172 @@
+================================================================================
+                    SISTEMA DE INDEXAÇÃO DE ARQUIVOS
+                    Estruturas de Dados II - 2025
+================================================================================
+
+DESCRIÇÃO
+---------
+Aplicação de linha de comando que simula um mecanismo de busca para documentos
+de texto utilizando estrutura de índice invertido. O sistema permite indexar
+arquivos .txt de um diretório, realizar buscas com múltiplas palavras (operador
+AND implícito) e persistir o índice em formato binário.
+
+AUTOR
+-------
+João Augusto do Nascimento
+
+REQUISITOS
+----------
+- Compilador C++ com suporte a C++17 ou superior
+- Make (para compilação)
+- Sistema operacional: Linux/Unix/MacOS
+
+ESTRUTURA DO PROJETO
+--------------------
+src/
+  ├── Index.cpp              - Estrutura de índice invertido
+  ├── TextProcessor.cpp      - Processamento e normalização de texto
+  ├── Indexer.cpp            - Leitura de arquivos e construção do índice
+  ├── QueryProcessor.cpp     - Processamento de consultas e buscas
+  ├── Serializer.cpp         - Serialização binária do índice
+  ├── main.cpp               - Interface de linha de comando
+  └── helpers/
+      └── StringTools.cpp    - Utilitários de manipulação de strings
+├── include/
+│   ├── Index.hpp
+│   ├── TextProcessor.hpp
+│   ├── Indexer.hpp
+│   ├── QueryProcessor.hpp
+│   ├── Serializer.hpp
+│   └── helpers/
+│       └── StringTools.hpp
+├── stopwords.txt
+├── Makefile
+├── LEIAME.txt
+└── README.md
+
+stopwords.txt                - Lista de palavras irrelevantes (stop words)
+Makefile                     - Script de compilação
+
+COMPILAÇÃO
+----------
+Para compilar o programa principal:
+    make
+
+Para limpar arquivos compilados:
+    make clean
+
+EXECUÇÃO
+--------
+O programa possui dois comandos principais:
+
+1. CONSTRUIR ÍNDICE:
+   ./indice construir <diretório>
+   
+   Exemplo:
+   ./indice construir textos/
+   
+   Este comando:
+   - Lê todos os arquivos .txt do diretório especificado
+   - Processa o texto (normalização, remoção de stop words)
+   - Constrói o índice invertido
+   - Salva o índice em arquivo binário (indice.dat)
+
+2. REALIZAR BUSCA:
+   ./indice buscar <palavra1> [palavra2] [palavra3] ...
+   
+   Exemplos:
+   ./indice buscar amor
+   ./indice buscar capitu bentinho
+   
+   Este comando:
+   - Carrega o índice previamente salvo
+   - Busca documentos contendo TODAS as palavras (operador AND)
+   - Exibe a lista de arquivos encontrados
+
+CARACTERÍSTICAS TÉCNICAS
+-------------------------
+- Índice Invertido: Mapeia palavras para conjuntos de IDs de documentos
+- Processamento de Texto:
+  * Conversão para minúsculas
+  * Remoção de pontuação
+  * Tokenização
+  * Filtragem de stop words (stopwords.txt)
+- Serialização Binária: Formato próprio para persistência eficiente
+- Busca com Interseção: Múltiplas palavras utilizam operador AND (conjuntos)
+- Gerenciamento de Memória: Implementa Rule of Five (C++)
+
+ESTRUTURA DE DADOS
+------------------
+O índice utiliza três estruturas principais:
+1. indiceInvertido: unordered_map<string, set<int>>
+   - Mapeia cada palavra para conjunto de IDs de documentos
+2. idParaArquivo: unordered_map<int, string>
+   - Mapeia ID do documento para nome do arquivo
+3. arquivoParaID: unordered_map<string, int>
+   - Mapeia nome do arquivo para ID do documento
+
+LIMITAÇÕES CONHECIDAS
+----------------------
+- O indexador NÃO percorre diretórios recursivamente
+  (processa apenas arquivos no primeiro nível do diretório especificado)
+- Apenas arquivos com extensão .txt são processados
+- Busca utiliza apenas operador AND (todas as palavras devem estar presentes)
+- Não há suporte para buscas com frases exatas (entre aspas)
+- Não há ranking de relevância nos resultados
+
+DESEMPENHO (corpus com 10 romances de Machado de Assis)
+--------------------------------------------------------
+- Indexação: ~107 ms
+- Salvamento: ~7 ms
+- Carregamento: ~20 ms
+- Busca: ~4 μs
+- Tamanho do índice: 952 KB
+
+EXEMPLO DE USO COMPLETO
+------------------------
+# 1. Compilar o programa
+make
+
+# 2. Criar diretório de teste com alguns arquivos .txt
+mkdir textos
+echo "o amor é eterno enquanto dura" > textos/doc1.txt
+echo "a vida é bela" > textos/doc2.txt
+echo "o amor e a vida são importantes" > textos/doc3.txt
+
+# 3. Construir o índice
+./indice construir textos/
+
+# 4. Realizar buscas
+./indice buscar amor
+# Resultado: doc1.txt, doc3.txt
+
+./indice buscar amor vida
+# Resultado: doc3.txt (interseção - contém ambas as palavras)
+
+RESOLUÇÃO DE PROBLEMAS
+-----------------------
+1. Erro "Diretório não existe":
+   - Verifique se o caminho está correto
+   - Use caminho relativo ou absoluto válido
+
+2. Erro "Nenhum arquivo .txt encontrado":
+   - Verifique se há arquivos com extensão .txt no diretório
+   - Lembre-se: não procura em subdiretórios
+
+3. Erro ao buscar - "Índice não encontrado":
+   - Execute o comando "construir" primeiro
+   - Certifique-se que o arquivo indice.dat foi criado
+
+4. Busca retorna resultados inesperados:
+   - Verifique o arquivo stopwords.txt
+   - Lembre-se que a busca é case-insensitive
+   - Busca com múltiplas palavras usa AND (todas devem estar presentes)
+
+------------------------
+Este é um projeto acadêmico desenvolvido para a disciplina de Estruturas de
+Dados II. Para dúvidas ou sugestões, consulte os autores listados no arquivo
+alunos.txt.
+
+================================================================================
+                  Feito com ❤️ pelo João Augusto do Nascimento
+================================================================================
