@@ -34,7 +34,7 @@ void Indexer::processarArquivo(const string& caminhoArquivo, Index& index) {
 }
 
 // Constrói o índice a partir de um diretório
-Index Indexer::construir(const string& diretorio) {
+Index Indexer::construir(const filesystem::path diretorio) {
     // 1. Criar objeto Index
     Index index = Index();
 

@@ -1,6 +1,7 @@
 #ifndef INDEXER_H
 #define INDEXER_H
 
+#include <filesystem>
 #include <string>
 
 #include "Index.hpp"
@@ -38,7 +39,7 @@ class Indexer {
      * @param diretorio Caminho do diretório contendo arquivos .txt
      * @return Objeto Index completamente populado
      */
-    Index construir(const string& diretorio);
+    Index construir(const filesystem::path diretorio);
 };
 
 #endif  // INDEXER_H

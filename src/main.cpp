@@ -8,7 +8,6 @@
 #include "Serializer.hpp"
 
 using namespace std;
-namespace fs = std::filesystem;
 
 /**
  * Exibe instruções de uso do programa
@@ -36,7 +35,7 @@ int comandoConstruir(const string& caminho) {
         return 1;
     }
 
-    if (!fs::is_directory(diretorio)) {
+    if (!filesystem::is_directory(diretorio)) {
         cout << "O caminho não é um diretório" << endl;
         return 2;
     }
@@ -45,7 +44,7 @@ int comandoConstruir(const string& caminho) {
     Indexer indexer;
 
     // 3. Construir índice
-    Index index = indexer.construir(caminho);
+    Index index = indexer.construir(diretorio);
 
     // 4. Criar objeto Serializer
     Serializer serializer;
@@ -71,7 +70,7 @@ int comandoBuscar(int argc, char* argv[]) {
         return 1;
     }
 
-    if (!fs::is_regular_file(arquivo)) {
+    if (!filesystem::is_regular_file(arquivo)) {
         cout << "Arquivo não identificado, tente indexar utilizando o comando: " << argv[0] << " construir caminho/do/diretorio" << endl;
         return 2;
     }
@@ -89,7 +88,7 @@ int comandoBuscar(int argc, char* argv[]) {
         query += ' ';
     }
 
-    // 5. Criar QueryProcessor: QueryProcessor qp(index)
+    // 5. Criar QueryProcessor
     QueryProcessor qp(index);
 
     // 6. Buscar
